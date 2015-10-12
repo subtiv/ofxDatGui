@@ -109,7 +109,7 @@ class ofxDatGuiSlider : public ofxDatGuiComponent {
         }
 
     /*
-        data binding - experiemental feature
+        data binding - experimental feature
     */
 
         void bind(int *val, int min, int max)

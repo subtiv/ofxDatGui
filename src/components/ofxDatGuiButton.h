@@ -45,6 +45,7 @@ class ofxDatGuiButton : public ofxDatGuiComponent {
             mLabelAreaWidth = mRow.width;
         }
     
+    
         void draw()
         {
             if (!mVisible) return;
@@ -126,6 +127,10 @@ class ofxDatGuiToggle : public ofxDatGuiButton {
 
         void draw()
         {
+            
+            if (mBoundb != nullptr){
+                getBoundb();
+            }
             ofxDatGuiButton::drawBkgd();
             ofxDatGuiComponent::drawLabel();
             ofxDatGuiComponent::drawStripe();
@@ -147,16 +152,31 @@ class ofxDatGuiToggle : public ofxDatGuiButton {
             if (buttonEventCallback != nullptr) {
                 ofxDatGuiButtonEvent e(this, mEnabled);
                 buttonEventCallback(e);
+            } else if (mBoundb != nullptr){
+                // do nothing
             }   else{
                 ofxDatGuiLog::write(ofxDatGuiMsg::EVENT_HANDLER_NULL);
             }
         }
     
+    void bind(bool *val)
+    {
+        mBoundb = val;
+    }
+    
+    inline void getBoundb()
+    {
+        if (*mBoundb != mEnabled) {
+            *mBoundb = mEnabled;
+        }
+    }
+    
     private:
         bool mEnabled;
+        bool*  mBoundb = nullptr;
+    
         ofImage radioOn;
         ofImage radioOff;
-
 };
 
 
