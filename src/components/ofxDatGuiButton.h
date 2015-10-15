@@ -92,6 +92,7 @@ class ofxDatGuiToggle : public ofxDatGuiButton {
     
         ofxDatGuiToggle(string label, bool enabled, ofxDatGuiTemplate* tmplt=nullptr) : ofxDatGuiButton(label, tmplt)
         {
+            mType = ofxDatGuiType::TOGGLE;
             mEnabled = enabled;
             mStripeColor = mTemplate->toggle.color.stripe;
             if (!radioOn.isAllocated()) radioOn.load(OFXDG_ASSET_DIR+"/icon-radio-on.png");
@@ -149,12 +150,13 @@ class ofxDatGuiToggle : public ofxDatGuiButton {
             ofxDatGuiComponent::onMouseRelease(m);
             mEnabled = !mEnabled;
         // dispatch event out to main application //
-            if (buttonEventCallback != nullptr) {
+            
+            if (mBoundb != nullptr) {
+                //do nothing
+            } else if (buttonEventCallback != nullptr){
                 ofxDatGuiButtonEvent e(this, mEnabled);
                 buttonEventCallback(e);
-            } else if (mBoundb != nullptr){
-                // do nothing
-            }   else{
+            }   else {
                 ofxDatGuiLog::write(ofxDatGuiMsg::EVENT_HANDLER_NULL);
             }
         }

@@ -29,6 +29,7 @@ namespace ofxDatGuiMsg
 {
     const string EVENT_HANDLER_NULL = "[WARNING] :: Event Handler Not Set";
     const string COMPONENT_NOT_FOUND = "[ERROR] :: Component Not Found";
+    const string XML_NOT_YET_IMPLEMENTED = "[WARING] :: XML Feature Not Yet Implemented";    
 }
 
 class ofxDatGuiLog {

@@ -23,6 +23,7 @@
 #pragma once
 #include "ofxDatGuiGroups.h"
 #include "ofxDatGuiControls.h"
+#include "ofxXMLSettings.h"
 
 class ofxDatGui : public ofxDatGuiInteractiveObject
 {
@@ -44,6 +45,9 @@ class ofxDatGui : public ofxDatGuiInteractiveObject
         void setAutoDraw(bool autodraw);
         void setTemplate(ofxDatGuiTemplate* t);
         void setAlignment(ofxDatGuiAlignment align);
+    
+        void loadFromXML(ofxXmlSettings & XML);
+        void saveToXML(ofxXmlSettings & XML);
     
         int getWidth();
         int getHeight();
@@ -121,6 +125,8 @@ class ofxDatGui : public ofxDatGuiInteractiveObject
         void onDraw(ofEventArgs &e);
         void onUpdate(ofEventArgs &e);
         void onWindowResized(ofResizeEventArgs &e);
+    
+        void makeSaveXMLTag(const bool encode, string & s);
     
         ofxDatGuiComponent* getComponent(string key);
         ofxDatGuiComponent* getComponent(ofxDatGuiType type, string label);

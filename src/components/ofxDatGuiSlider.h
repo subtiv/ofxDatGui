@@ -58,13 +58,13 @@ class ofxDatGuiSlider : public ofxDatGuiComponent {
         void onInputChanged(ofxDatGuiInternalEvent e)
         {
             setValue(ofToFloat(input->getText()));
-            dispatchSliderChangedEvent();
         }
     
         void setValue(float value)
         {
             mVal = value;
             calcScale();
+            dispatchSliderChangedEvent();
         }
     
         float getValue()
@@ -225,7 +225,9 @@ class ofxDatGuiSlider : public ofxDatGuiComponent {
             }
             
         // dispatch event out to main application //
-            if (sliderEventCallback != nullptr) {
+            if ((mBoundi != nullptr)||(mBoundf !=nullptr)) {
+                //do nothing
+            } else if (sliderEventCallback != nullptr) {
                 ofxDatGuiSliderEvent e(this, mVal, mScale);
                 sliderEventCallback(e);
             }   else{

@@ -127,6 +127,130 @@ void ofxDatGui::setAlignment(ofxDatGuiAlignment align)
     mAlignmentChanged = true;
 }
 
+
+/**
+ *  CUSTOM SUBTIV FUNCTIONS
+ */
+
+/**
+ * TODO: make abstractions for load/save… they do basically the same
+ *  @param XML the XML file you wanna read out
+ */
+void ofxDatGui::loadFromXML(ofxXmlSettings & XML){
+//    string s;
+//    XML.copyXmlToString(s);
+//    cout << s << endl;
+    for (auto folder = items.begin(); folder != items.end(); folder++) {
+        ofxDatGuiFolder* o = static_cast<ofxDatGuiFolder*>(*folder);
+        if (o != NULL) { // we are dealing with a folder
+            string foldername = o->getName();
+            makeSaveXMLTag(true, foldername);
+            XML.pushTag(foldername);
+            
+            for (auto child = o->children.begin(); child!=o->children.end(); child++) {
+                ofxDatGuiType type = (*child)->getType();
+                
+                string childname = (*child)->getName();
+                makeSaveXMLTag(true, childname);
+                
+                switch (type) {
+                    case ofxDatGuiType::TOGGLE:
+                        (static_cast<ofxDatGuiToggle*>(*child))
+                        ->setEnabled(XML.getValue(childname, 0));
+                        break;
+                    case ofxDatGuiType::SLIDER:
+                        (static_cast<ofxDatGuiSlider*>(*child))
+                        ->setValue((float)XML.getValue(childname, 0.0f));
+                        break;
+                        //do nothing
+                    case ofxDatGuiType::LABEL:
+                    case ofxDatGuiType::HEADER:
+                    case ofxDatGuiType::FOOTER:
+                    case ofxDatGuiType::FRAME_RATE:
+                    case ofxDatGuiType::WAVE_MONITOR:
+                    case ofxDatGuiType::VALUE_PLOTTER:
+                        break;
+                    default:
+                        ofxDatGuiLog::write(ofxDatGuiMsg::XML_NOT_YET_IMPLEMENTED, ofToString(type));
+                        break;
+                }
+                (*child)->update();
+            }
+            XML.popTag();
+        }
+    }
+}
+
+void ofxDatGui::makeSaveXMLTag(const bool encode, string & s){
+    const char illegal  = ' ';
+    const char safe     = '_';
+    char char1 = encode ? illegal : safe;
+    char char2 = encode ? safe : illegal;
+    
+    std::transform(s.begin(), s.end(), s.begin(), [&](char ch) {
+        return ch == char1 ? char2 : ch;
+    });
+}
+
+/**
+ *  Experimental: only saves sliders and toggles
+ *  also: expects all sliders/toggles to be inside folder
+ *
+ *  @param XML the XML file you wanna read out
+ */
+void ofxDatGui::saveToXML(ofxXmlSettings & XML){
+    
+    XML.clear();
+    
+    for (auto folder = items.begin(); folder != items.end(); folder++) {
+        ofxDatGuiFolder* o = static_cast<ofxDatGuiFolder*>(*folder);
+        if (o != NULL) { // we are dealing with a folder
+            
+            string foldername = o->getName();
+            makeSaveXMLTag(true, foldername);
+            
+            XML.addTag(foldername);
+            XML.pushTag(foldername);
+            
+            for (auto child = o->children.begin(); child!=o->children.end(); child++) {
+                ofxDatGuiType type = (*child)->getType();
+                
+                string childname = (*child)->getName();
+                makeSaveXMLTag(true, childname);
+                
+                switch (type) {
+                    case ofxDatGuiType::TOGGLE:
+                        XML.addValue(childname,
+                                     (static_cast<ofxDatGuiToggle*>(*child))->getEnabled());
+                        break;
+                    case ofxDatGuiType::SLIDER:
+                        XML.addValue(childname,
+                                     (static_cast<ofxDatGuiSlider*>(*child))->getValue());
+                        break;
+                    //do nothing
+                    case ofxDatGuiType::LABEL:
+                    case ofxDatGuiType::HEADER:
+                    case ofxDatGuiType::FOOTER:
+                    case ofxDatGuiType::FRAME_RATE:
+                    case ofxDatGuiType::WAVE_MONITOR:
+                    case ofxDatGuiType::VALUE_PLOTTER:
+                        break;
+                    default:
+                        ofxDatGuiLog::write(ofxDatGuiMsg::XML_NOT_YET_IMPLEMENTED, ofToString(type));
+                        break;
+                }
+            }
+            XML.popTag();
+        }
+    }
+    XML.saveFile();
+}
+
+/**
+ *  END CUSTOM SUBTIV FUNCTIONS
+ *
+ */
+
 int ofxDatGui::getWidth()
 {
     return mWidth;
