@@ -246,7 +246,8 @@ class ofxDatGuiFolder : public ofxDatGuiGroup{
             return button;
         }
     
-        ofxDatGuiButton* addToggle(string label, bool enabled = false)
+    
+        ofxDatGuiToggle* addToggle(string label, bool enabled = false)
         {
             ofxDatGuiToggle* toggle = new ofxDatGuiToggle(label, enabled, mTemplate);
             toggle->setStripeColor(mStripeColor);
@@ -255,13 +256,32 @@ class ofxDatGuiFolder : public ofxDatGuiGroup{
             return toggle;
         }
     
+    ofxDatGuiToggle* addToggle(string label, bool *val){
+        ofxDatGuiToggle* toggle = addToggle(label);
+        toggle->bind(val);
+        return toggle;
+    }
+    
         ofxDatGuiSlider* addSlider(string label, float min, float max)
         {
         // default to halfway between min & max values //
             ofxDatGuiSlider* slider = addSlider(label, min, max, (max+min)/2);
             return slider;
         }
-
+    
+        ofxDatGuiSlider* addSlider(string label, float *bindval){
+            // default to halfway between min & max values //
+            ofxDatGuiSlider* slider = addSlider(label);
+            slider->bind(bindval);
+            return slider;
+        }
+    
+        ofxDatGuiSlider* addSlider(string label){
+            // default to halfway between min & max values //
+            ofxDatGuiSlider* slider = addSlider(label, 0, 1);
+            return slider;
+        }
+    
         ofxDatGuiSlider* addSlider(string label, float min, float max, float val)
         {
             ofxDatGuiSlider* slider = new ofxDatGuiSlider(label, min, max, val, mTemplate);
@@ -270,6 +290,7 @@ class ofxDatGuiFolder : public ofxDatGuiGroup{
             attachItem(slider);
             return slider;
         }
+    
     
         ofxDatGuiTextInput* addTextInput(string label, string value)
         {

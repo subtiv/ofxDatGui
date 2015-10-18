@@ -116,19 +116,29 @@ class ofxDatGuiSlider : public ofxDatGuiComponent {
         {
             mMin = min;
             mMax = max;
-            mBoundi = val;
-            mBoundf = nullptr;
+            bind(val);
         }
     
         void bind(float *val, float min, float max)
         {
             mMin = min;
             mMax = max;
+            bind(val);
+        }
+    
+        void bind(int *val)
+        {
+            mBoundi = val;
+            mBoundf = nullptr;
+        }
+        
+        void bind(float *val)
+        {
             mBoundf = val;
             mBoundi = nullptr;
         }
 
-        inline void getBoundf()
+        virtual inline void getBoundf()
         {
             if (*mBoundf != pVal) {
                 setValue(*mBoundf);
@@ -136,7 +146,7 @@ class ofxDatGuiSlider : public ofxDatGuiComponent {
             }
         }
     
-        inline void getBoundi()
+        virtual inline void getBoundi()
         {
             if (*mBoundi != pVal) {
                 setValue(*mBoundi);
@@ -253,6 +263,12 @@ class ofxDatGuiSlider : public ofxDatGuiComponent {
             }
         }
     
+    protected:
+    int*    mBoundi = nullptr;
+    float*  mBoundf = nullptr;
+    
+    float   pVal;
+    
     private:
         float   mMin;
         float   mMax;
@@ -261,10 +277,6 @@ class ofxDatGuiSlider : public ofxDatGuiComponent {
         bool    mChanged;
         bool    mInputActive;
         ofxDatGuiTextInputField* input;
-    
-        float   pVal;
-        int*    mBoundi = nullptr;
-        float*  mBoundf = nullptr;
     
         void calcScale()
         {
